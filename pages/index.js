@@ -10,12 +10,12 @@ export default function Home() {
   const [isFavourite, setIsFavourite] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [isLoading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const localData =
     typeof window !== 'undefined' &&
     JSON.parse(localStorage?.getItem('favorites'));
-
-  console.log(process.env.API_KEY);
 
   const headers = {
     method: 'GET',
@@ -28,16 +28,18 @@ export default function Home() {
 
   useEffect(() => {
     fetch(
-      'https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1',
+      `https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=${currentPage}`,
       headers
     )
       .then((res) => res.json())
       .then((data) => {
         setMovieList(data?.results);
+        setTotalPages(data?.total_pages);
         setLoading(false);
       })
       .catch((err) => console.error(err));
-  }, []);
+  }, [currentPage]);
+  
 
   const onSearch = (e) => {
     const keyword = e.target.value;
@@ -52,6 +54,18 @@ export default function Home() {
       item?.title?.toLowerCase()?.includes(searchValue?.toLowerCase())
     );
   }, [localData, movieList, searchValue]);
+
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   if (isLoading) return <>loading....</>;
 
@@ -70,6 +84,16 @@ export default function Home() {
           {filteredData?.map((moviedata, key) => (
             <MovieCard data={moviedata} key={key} />
           ))}
+        </div>
+
+        <div className={styles.pagination}>
+          <button onClick={prevPage} disabled={currentPage === 1}>
+             Previous
+          </button>
+          <span>{`Page ${currentPage} of ${totalPages}`}</span>
+          <button onClick={nextPage} disabled={currentPage === totalPages}>
+            Next
+          </button>
         </div>
 
         <footer className={styles.footer}>
