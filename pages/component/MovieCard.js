@@ -22,7 +22,7 @@ export default function MovieCard(data) {
       }
       setFavorites(updatedFavorites);
     } else {
-      const updatedFavorites = favorites.filter((fav) => fav?.id !== movie?.id);
+      const updatedFavorites = favorites?.filter((fav) => fav?.id !== movie?.id);
       if (typeof window !== 'undefined') {
         localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
       }
@@ -31,7 +31,7 @@ export default function MovieCard(data) {
   };
 
   const isfavourite = useMemo(() => {
-    return favorites.some((item) => item?.id === data?.data?.id);
+    return favorites?.some((item) => item?.id === data?.data?.id);
   }, [favorites, data]);
 
   return (
