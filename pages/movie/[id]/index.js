@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import styles from '../../styles/Home.module.css';
+import styles from '../../../styles/Home.module.css';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 
@@ -33,7 +33,7 @@ export default function MovieDetails() {
       <div className={styles.movieInfo}>
         <div className={styles.grid}>
           <Image
-            src={movieInfo?.backdrop_path}
+            src={`https://image.tmdb.org/t/p/w500/${movieInfo?.backdrop_path}`}
             height={150}
             width={150}
             decoding="async"
