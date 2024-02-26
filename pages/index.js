@@ -1,11 +1,11 @@
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
-import MovieCard from './component/MovieCard';
-
-import React, { useState, useEffect, useMemo } from 'react';
 import Banner from './component/Banner';
+import MovieCard from './component/MovieCard';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
-export default function Home() {
+const Home =()=> {
   const [movieList, setMovieList] = useState([]);
   const [isFavourite, setIsFavourite] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -13,9 +13,7 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  const localData =
-    typeof window !== 'undefined' &&
-    JSON.parse(localStorage?.getItem('favorites'));
+  const favouriteMovies = useSelector((state) => state.favorites);
 
   const headers = {
     method: 'GET',
@@ -48,7 +46,7 @@ export default function Home() {
 
   // Memoized filtered data
   const filteredData = useMemo(() => {
-    const moviesData = isFavourite ? localData : movieList;
+    const moviesData = isFavourite ? favouriteMovies : movieList;
 
     return moviesData?.filter((item) =>
       item?.title?.toLowerCase()?.includes(searchValue?.toLowerCase())
@@ -77,6 +75,7 @@ export default function Home() {
         </Head>
 
         <Banner searchValue={searchValue} onSearch={onSearch} />
+
         <button onClick={() => setIsFavourite(true)}>Favourite Movies</button>
         <button onClick={() => setIsFavourite(false)}>Upcoming Movies</button>
 
@@ -109,3 +108,6 @@ export default function Home() {
     </div>
   );
 }
+
+
+export default Home

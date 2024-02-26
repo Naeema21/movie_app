@@ -1,33 +1,17 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from '../../styles/Home.module.css';
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToFavourite, deletefavourite } from '../../redux/reducer';
 
-export default function MovieCard(data) {
-  const [favorites, setFavorites] = useState([]);
+const MovieCard = (data) => {
+  const dispatch = useDispatch();
+  const favorites = useSelector((state) => state.favorites);
 
-  useEffect(() => {
-    const storedFavorites =
-      typeof window !== 'undefined' && localStorage.getItem('favorites');
-    if (storedFavorites) {
-      setFavorites(JSON.parse(storedFavorites));
-    }
-  }, []);
 
   const handleAddToFavorites = (movie) => {
-    if (!favorites.find((fav) => fav?.id === movie?.id)) {
-      const updatedFavorites = [...favorites, movie];
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
-      }
-      setFavorites(updatedFavorites);
-    } else {
-      const updatedFavorites = favorites?.filter((fav) => fav?.id !== movie?.id);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
-      }
-      setFavorites(updatedFavorites);
-    }
+    isfavourite ? dispatch(addToFavourite(movie)) : dispatch(deletefavourite(movie))
   };
 
   const isfavourite = useMemo(() => {
@@ -47,7 +31,7 @@ export default function MovieCard(data) {
       />
       <br />
       <svg
-        style={{ color: isfavourite ? 'red' : '' }}
+        style={{ color: isfavourite ? 'red' : 'black' }}
         onClick={() => handleAddToFavorites(data?.data)}
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -69,3 +53,6 @@ export default function MovieCard(data) {
     </div>
   );
 }
+
+
+export default MovieCard
